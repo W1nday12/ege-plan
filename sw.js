@@ -1,7 +1,7 @@
 /* Догонялка — офлайн-оболочка.
    HTML всегда берём из сети (чтобы обновления приходили сразу),
    при отсутствии сети отдаём последнюю сохранённую копию. */
-const CACHE = 'dogonyalka-v2';
+const CACHE = 'dogonyalka-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
                './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
