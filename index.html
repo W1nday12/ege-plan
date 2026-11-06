@@ -168,6 +168,7 @@
 <script>
 /* ======================= константы ======================= */
 const KEY = 'ege_app_v2';
+const APP_VER = '2.1';
 const SITE = 'https://lk.100points.ru/student/calendar';
 const API = 'https://api.100points.ru/api';
 const PALETTE = ['#007AFF','#AF52DE','#FF9500','#34C759','#FF3B30','#5AC8FA','#FF2D55','#5856D6','#FF9F0A','#30D158'];
@@ -543,9 +544,10 @@ function viewSettings(){
   '<div class="gh">Прочее</div>'+
   '<div class="group">'+
     '<button class="row" data-act="resetsetup"><span class="grow"><span class="rt">Настроить заново</span><span class="rs" style="display:block">выбрать другие курсы и токен</span></span><span class="chev">'+I.chev+'</span></button>'+
+    '<button class="row" data-act="reload"><span class="grow"><span class="rt">Проверить обновления</span><span class="rs" style="display:block">если приложение выглядит старым</span></span><span class="chev">'+I.refresh+'</span></button>'+
     '<button class="row" data-act="resetprogress"><span class="grow"><span class="rt" style="color:var(--red)">Сбросить прогресс</span></span></button>'+
   '</div>'+
-  '<div class="note">Личный кабинет: <a href="'+SITE+'" target="_blank" rel="noopener">lk.100points.ru</a></div>'+
+  '<div class="note">Личный кабинет: <a href="'+SITE+'" target="_blank" rel="noopener">lk.100points.ru</a> · версия '+APP_VER+'</div>'+
   (storageBroken?'<div class="note warn">Браузер не разрешает сохранять данные. Открой приложение по ссылке https://, иначе прогресс не сохранится.</div>':'');
 }
 
@@ -860,6 +862,16 @@ document.addEventListener('click',async e=>{
   if(a==='ics'){ downloadICS(); return; }
   if(a==='sync'){ sync(false); return; }
   if(a==='install'){ installApp(); return; }
+  if(a==='reload'){
+    try{
+      if('serviceWorker' in navigator){
+        const regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r=>r.update().catch(()=>{})));
+      }
+    }catch(e){}
+    location.replace(location.pathname+'?r='+Date.now());
+    return;
+  }
 
   if(a==='days'){
     state.settings.days=Math.max(1,Math.min(180,(state.settings.days||7)+Number(el.dataset.d)));
