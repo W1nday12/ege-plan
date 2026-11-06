@@ -151,8 +151,13 @@
   .spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
        animation:spin .8s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .empty{text-align:center;padding:34px 20px;color:var(--secondary)}
+  .empty{text-align:center;padding:30px 22px;color:var(--secondary)}
   .empty .e{font-size:40px;display:block;margin-bottom:8px}
+  .empty .ico{width:62px;height:62px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;
+              background:var(--fill);color:var(--blue)}
+  .empty .ico svg{width:30px;height:30px}
+  .empty .et{display:block;font-size:16.5px;font-weight:600;color:var(--label)}
+  .empty .ed{display:block;font-size:13.5px;margin-top:4px;line-height:1.4}
   .tag{font-size:12px;font-weight:600;color:var(--secondary);background:var(--fill);border-radius:8px;padding:3px 8px;white-space:nowrap}
   .ok{color:var(--green)} .warn{color:var(--orange)}
   a{color:var(--blue);text-decoration:none}
@@ -160,6 +165,38 @@
   details summary{list-style:none;cursor:pointer}
   details summary::-webkit-details-marker{display:none}
   .lnk{background:none;border:0;padding:0;color:var(--blue);font:inherit;cursor:pointer}
+
+  /* переходы между экранами */
+  .slide-l{animation:slideL .3s cubic-bezier(.32,.72,0,1)}
+  .slide-r{animation:slideR .3s cubic-bezier(.32,.72,0,1)}
+  @keyframes slideL{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+  @keyframes slideR{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
+
+  /* обложки курсов */
+  .cover{width:52px;height:52px;border-radius:14px;flex:none;background:var(--fill);position:relative;overflow:hidden;
+         box-shadow:0 1px 3px rgba(0,0,0,.10)}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .cover.ph{display:grid;place-items:center;color:#fff;font-weight:700;font-size:21px;box-shadow:none}
+  .ring.sm,.ring.sm svg{width:42px;height:42px}
+  .ring.sm b{font-size:11px}
+
+  /* выбор акцента */
+  .swatches{display:flex;gap:16px;padding:4px 16px 16px}
+  .swatch{width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;
+          cursor:pointer;transition:transform .16s cubic-bezier(.32,.72,0,1)}
+  .swatch svg{width:16px;height:16px;stroke-width:3}
+  .swatch:active{transform:scale(.9)}
+  .swatch.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--label)}
+
+  /* конфетти */
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:70;overflow:hidden}
+  .confetti i{position:absolute;top:30%;display:block;animation:conf 1.9s cubic-bezier(.2,.6,.4,1) forwards}
+  @keyframes conf{0%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+                  100%{opacity:0;transform:translate3d(var(--x),72vh,0) rotate(var(--r))}}
+
+  @media (prefers-reduced-motion:reduce){
+    .slide-l,.slide-r,.fade,.pop,.confetti i{animation:none!important}
+  }
 </style>
 </head>
 <body>
@@ -168,7 +205,7 @@
 <script>
 /* ======================= константы ======================= */
 const KEY = 'ege_app_v2';
-const APP_VER = '2.1';
+const APP_VER = '2.2';
 const SITE = 'https://lk.100points.ru/student/calendar';
 const API = 'https://api.100points.ru/api';
 const PALETTE = ['#007AFF','#AF52DE','#FF9500','#34C759','#FF3B30','#5AC8FA','#FF2D55','#5856D6','#FF9F0A','#30D158'];
@@ -194,8 +231,8 @@ let storageBroken = false;
 const pad = n => String(n).padStart(2,'0');
 
 function defState(){
-  return { v:2, onboarded:false, token:'', subjects:[], settings:{ time:'19:00', days:7, notify:false, lastNotified:'' },
-           dayPlan:{ date:'', items:[] }, dataAt:'', dataTs:0, lastError:'', tab:'today', planSubj:null, _just:'',
+  return { v:2, onboarded:false, token:'', subjects:[], settings:{ time:'19:00', days:7, notify:false, lastNotified:'', accent:'blue' },
+           dayPlan:{ date:'', items:[] }, celebrated:'', dataAt:'', dataTs:0, lastError:'', tab:'today', planSubj:null, _just:'', _anim:'',
            ob:{ active:false, mode:'setup', step:0, courses:[], selected:{}, progress:{}, detected:{}, busy:false, err:'', tokenDraft:'', q:'', showAll:false, fetched:null } };
 }
 function load(){
@@ -209,6 +246,22 @@ function load(){
 }
 let state = load();
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ storageBroken = true; } }
+
+const ACCENTS = {
+  blue:    { a:'#007AFF', b:'#5E5CE6', name:'Синий' },
+  mint:    { a:'#00BFA6', b:'#2E8BFF', name:'Мятный' },
+  graphite:{ a:'#7C7C80', b:'#48484A', name:'Графит' },
+  purple:  { a:'#AF52DE', b:'#5856D6', name:'Сиреневый' }
+};
+function applyAccent(){
+  const a=ACCENTS[state.settings.accent]||ACCENTS.blue;
+  const r=document.documentElement.style;
+  r.setProperty('--blue',a.a);
+  r.setProperty('--hero1',a.a);
+  r.setProperty('--hero2',a.b);
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.setAttribute('content',a.a));
+}
+function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 
 /* ======================= даты ======================= */
 const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -344,6 +397,7 @@ function makeSubject(course, lessons, paletteIndex, current){
     id:'c'+course.id, courseId:course.id,
     name: course.subject_title || shortCourse(course.title),
     course: course.title,
+    cover: course.cover || '',
     color: course.subject_color || PALETTE[paletteIndex%PALETTE.length],
     lessons,
     watched: current>0 ? range(1,current) : []
@@ -385,10 +439,33 @@ function planDone(){
 /* ======================= рендер ======================= */
 function render(){
   const root=document.getElementById('root');
+  applyAccent();
   if(!state.onboarded || state.ob.active){ root.innerHTML = onboardView(); return; }
   const body = state.tab==='plan' ? viewPlan() : state.tab==='set' ? viewSettings() : viewToday();
-  root.innerHTML = '<div class="app fade">'+body+'</div>'+tabbar();
-  state._just='';
+  root.innerHTML = '<div class="app '+(state._anim||'fade')+'">'+body+'</div>'+tabbar();
+  state._just=''; state._anim='';
+}
+
+function celebrate(){
+  if(document.querySelector('.confetti')) return;
+  const box=document.createElement('div');
+  box.className='confetti';
+  const colors=['#0A84FF','#34C759','#FF9F0A','#AF52DE','#FF375F','#00BFA6','#FFD60A'];
+  for(let i=0;i<44;i++){
+    const p=document.createElement('i');
+    p.style.left=(42+Math.random()*16).toFixed(1)+'%';
+    p.style.background=colors[i%colors.length];
+    p.style.width=(5+Math.random()*6).toFixed(0)+'px';
+    p.style.height=(9+Math.random()*8).toFixed(0)+'px';
+    p.style.borderRadius=Math.random()>.5?'50%':'2px';
+    p.style.animationDelay=(Math.random()*.2).toFixed(2)+'s';
+    p.style.animationDuration=(1.5+Math.random()*.9).toFixed(2)+'s';
+    p.style.setProperty('--x',((Math.random()*2-1)*46).toFixed(0)+'vw');
+    p.style.setProperty('--r',((Math.random()*2-1)*720).toFixed(0)+'deg');
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(()=>box.remove(),3400);
 }
 
 function tabbar(){
@@ -398,9 +475,9 @@ function tabbar(){
   ).join('')+'</nav>';
 }
 
-function ring(pct,color,label){
+function ring(pct,color,label,cls){
   const r=20, c=2*Math.PI*r, off=c*(1-Math.min(100,pct)/100);
-  return '<div class="ring"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="'+r+'" fill="none" stroke="rgba(120,120,128,.18)" stroke-width="5"/>'+
+  return '<div class="ring '+(cls||'')+'"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="'+r+'" fill="none" stroke="rgba(120,120,128,.18)" stroke-width="5"/>'+
     '<circle cx="24" cy="24" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/></svg><b>'+label+'</b></div>';
 }
 
@@ -425,12 +502,14 @@ function viewToday(){
     const tgt=targetNo(s), cur=currentNo(s), rem=remainingOf(s), pd=perDayOf(s);
     totalRem+=rem.length; totalTasks+=tasksSum(rem); totalPd+=pd;
     const pct=tgt?Math.min(100,Math.round(cur/tgt*100)):100;
+    const initial=(String(s.name||'?').trim().charAt(0)||'?').toUpperCase();
     return '<button class="subj" data-act="openplan" data-subj="'+s.id+'">'+
-      ring(pct,s.color,cur)+
+      '<span class="cover ph" style="background:'+s.color+'">'+esc(initial)+
+        (s.cover?'<img src="'+esc(s.cover)+'" alt="" decoding="async" onerror="this.remove()">':'')+'</span>'+
       '<div class="grow"><div class="sname">'+esc(s.name)+'</div>'+
       '<div class="scourse">'+esc(s.course)+'</div>'+
       '<div class="smeta">цель: урок '+tgt+' · осталось '+rem.length+'</div></div>'+
-      '<span class="chev">'+I.chev+'</span></button>';
+      ring(pct,s.color,cur,'sm')+'</button>';
   }).join('');
 
   const items=state.dayPlan.items.filter(i=>{
@@ -455,7 +534,10 @@ function viewToday(){
         : '')+
     '</div>'
   ) : (
-    '<div class="group"><div class="empty"><span class="e">🎉</span>Ты догнал сегодняшний номер.<br><span class="rs">Новые уроки появятся автоматически.</span></div></div>'
+    '<div class="group"><div class="empty">'+
+      '<div class="ico" style="color:var(--green);background:rgba(52,199,89,.14)">'+I.check+'</div>'+
+      '<span class="et">Ты догнал сегодняшний номер</span>'+
+      '<span class="ed">Новые уроки подтянутся автоматически — можно отдохнуть.</span></div></div>'
   );
 
   return ''+
@@ -476,7 +558,7 @@ function viewToday(){
 
 function viewPlan(){
   const s = subjBy(state.planSubj) || state.subjects[0];
-  if(!s) return '<div class="empty">Нет предметов</div>';
+  if(!s) return '<div class="empty"><div class="ico">'+I.book+'</div><span class="et">Пока нет предметов</span><span class="ed">Добавь курс в Настройках — и здесь появится план по урокам.</span></div>';
   state.planSubj = s.id;
   const tgt=targetNo(s), cur=currentNo(s), rem=remainingOf(s), w=watchedSet(s);
   const pct=tgt?Math.min(100,Math.round(w.size/tgt*100)):100;
@@ -523,6 +605,16 @@ function viewSettings(){
     '<div class="field"><label>Уведомления</label><span class="sw"><input type="checkbox" data-act="notify" '+(state.settings.notify?'checked':'')+'><i></i></span></div>'+
   '</div>'+
   '<button class="btn sm" data-act="ics" style="margin-bottom:18px">Добавить в календарь (.ics)</button>'+
+
+  '<div class="gh">Оформление</div>'+
+  '<div class="group">'+
+    '<div class="field"><label>Акцент</label><span style="font-size:15px;color:var(--secondary)">'+
+      (ACCENTS[state.settings.accent]||ACCENTS.blue).name+'</span></div>'+
+    '<div class="swatches">'+Object.keys(ACCENTS).map(k=>
+      '<button class="swatch '+(state.settings.accent===k?'on':'')+'" data-act="accent" data-k="'+k+'" aria-label="'+ACCENTS[k].name+'" '+
+      'style="background:linear-gradient(140deg,'+ACCENTS[k].a+','+ACCENTS[k].b+')">'+(state.settings.accent===k?I.check:'')+'</button>'
+    ).join('')+'</div>'+
+  '</div>'+
 
   '<div class="gh">Аккаунт</div>'+
   '<div class="group">'+
@@ -591,7 +683,7 @@ function onboardView(){
           '<span class="grow"><span class="rt" style="font-size:15px">'+esc(c.title)+'</span>'+
           '<span class="rs" style="display:block">'+(c.count_lesson?c.count_lesson+' уроков · ':'')+(c.count_lesson_done||0)+' пройдено</span></span>'+
           '<span class="sel '+(on?'on':'')+'">'+I.check+'</span></div>';
-      }).join(''):'<div class="empty">Ничего не нашлось</div>')+
+      }).join(''):'<div class="empty"><div class="ico">'+I.spark+'</div><span class="et">Ничего не нашлось</span><span class="ed">Попробуй другой запрос или включи архивные курсы.</span></div>')+
       '</div>'+
       '<div class="group" style="margin-top:10px"><div class="field"><label style="font-size:15px">Показать архивные курсы</label>'+
         '<span class="sw"><input type="checkbox" data-act="ob-all" '+(ob.showAll?'checked':'')+'><i></i></span></div>'+
@@ -729,6 +821,15 @@ async function sync(silent){
       const ls=buildLessons(raw,dm);
       if(ls.length) s.lessons=ls;
     }
+    if(state.subjects.some(s=>!s.cover)){
+      try{
+        const courses=await getAllCourses(state.token);
+        for(const s of state.subjects){
+          const c=courses.find(x=>x.id===s.courseId);
+          if(c) s.cover=c.cover||'';
+        }
+      }catch(e){}
+    }
     state.dataAt=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
     state.dataTs=Date.now(); state.lastError='';
     save();
@@ -850,15 +951,29 @@ document.addEventListener('click',async e=>{
   if(!el||el.disabled) return;
   const a=el.dataset.act;
 
-  if(a==='tab'){ state.tab=el.dataset.tab; save(); render(); window.scrollTo(0,0); return; }
+  if(a==='tab'){
+    const order=['today','plan','set'];
+    const from=order.indexOf(state.tab), to=order.indexOf(el.dataset.tab);
+    state._anim = to>from ? 'slide-l' : to<from ? 'slide-r' : '';
+    state.tab=el.dataset.tab; buzz(6); save(); render(); window.scrollTo(0,0); return;
+  }
   if(a==='plansubj'){ state.planSubj=el.dataset.subj; save(); render(); return; }
   if(a==='openplan'){ state.planSubj=el.dataset.subj; state.tab='plan'; save(); render(); window.scrollTo(0,0); return; }
   if(a==='toggle'){
     const s=subjBy(el.dataset.subj); if(!s) return;
-    toggleWatched(s,+el.dataset.n); save(); render(); return;
+    toggleWatched(s,+el.dataset.n);
+    buzz(10);
+    let done=false;
+    if(planDone() && state.celebrated!==todayKey()){
+      state.celebrated=todayKey(); done=true;
+    }
+    save(); render();
+    if(done){ celebrate(); buzz([14,50,14,50,26]); toast('План дня закрыт — красота'); }
+    return;
   }
-  if(a==='extend'){ extendPlan(); save(); render(); return; }
-  if(a==='markall'){ const s=subjBy(el.dataset.subj); if(s){ setCurrent(s,+el.dataset.n); save(); render(); } return; }
+  if(a==='extend'){ extendPlan(); state.celebrated=''; save(); render(); return; }
+  if(a==='markall'){ const s=subjBy(el.dataset.subj); if(s){ setCurrent(s,+el.dataset.n); buzz(18); save(); render(); } return; }
+  if(a==='accent'){ state.settings.accent=el.dataset.k; buzz(8); save(); render(); return; }
   if(a==='ics'){ downloadICS(); return; }
   if(a==='sync'){ sync(false); return; }
   if(a==='install'){ installApp(); return; }
@@ -875,7 +990,7 @@ document.addEventListener('click',async e=>{
 
   if(a==='days'){
     state.settings.days=Math.max(1,Math.min(180,(state.settings.days||7)+Number(el.dataset.d)));
-    state.dayPlan={date:'',items:[]}; save(); render(); return;
+    state.dayPlan={date:'',items:[]}; state.celebrated=''; save(); render(); return;
   }
   if(a==='savetoken'){
     const inp=document.querySelector('[data-act="token"]');
