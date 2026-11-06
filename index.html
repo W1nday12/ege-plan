@@ -7,6 +7,10 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Догонялка">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
 <title>Догонялка</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230A84FF'/%3E%3Cstop offset='1' stop-color='%235E5CE6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M20 34l8 8 16-18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
@@ -231,6 +235,10 @@ function plural(n,one,few,many){
   return many;
 }
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function isStandalone(){
+  try{ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true; }
+  catch(e){ return false; }
+}
 
 /* ======================= работа с данными ======================= */
 const subjBy = id => state.subjects.find(s=>s.id===id);
@@ -527,6 +535,11 @@ function viewSettings(){
   '</div>'+
   (rows?'<div class="gh">Предметы</div><div class="group">'+rows+'</div>':'')+
 
+  (isStandalone() ? '' :
+    '<div class="gh">Приложение</div>'+
+    '<div class="group"><button class="row" data-act="install"><span class="grow"><span class="rt">Установить на телефон</span>'+
+      '<span class="rs" style="display:block">иконка на главном экране, без адресной строки</span></span><span class="chev">'+I.plus+'</span></button></div>')+
+
   '<div class="gh">Прочее</div>'+
   '<div class="group">'+
     '<button class="row" data-act="resetsetup"><span class="grow"><span class="rt">Настроить заново</span><span class="rs" style="display:block">выбрать другие курсы и токен</span></span><span class="chev">'+I.chev+'</span></button>'+
@@ -817,6 +830,19 @@ function toggleWatched(s,n){
   state._just=s.id+':'+n;
 }
 
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installPrompt=e; });
+window.addEventListener('appinstalled',()=>{ installPrompt=null; toast('Установлено на главный экран'); });
+function installApp(){
+  if(installPrompt){
+    installPrompt.prompt();
+    Promise.resolve(installPrompt.userChoice).then(()=>{ installPrompt=null; }).catch(()=>{});
+    return;
+  }
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) toast('Safari: «Поделиться» → «На экран „Домой“»');
+  else toast('Chrome: меню ⋮ → «Установить приложение»');
+}
+
 document.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');
   if(!el||el.disabled) return;
@@ -833,6 +859,7 @@ document.addEventListener('click',async e=>{
   if(a==='markall'){ const s=subjBy(el.dataset.subj); if(s){ setCurrent(s,+el.dataset.n); save(); render(); } return; }
   if(a==='ics'){ downloadICS(); return; }
   if(a==='sync'){ sync(false); return; }
+  if(a==='install'){ installApp(); return; }
 
   if(a==='days'){
     state.settings.days=Math.max(1,Math.min(180,(state.settings.days||7)+Number(el.dataset.d)));
@@ -946,6 +973,10 @@ setInterval(()=>{
   notifyTick();
   if(state.token && Date.now()-state.dataTs>3*3600*1000) sync(true);
 },60000);
+
+if('serviceWorker' in navigator && (location.protocol==='https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))){
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(()=>{});
+}
 </script>
 </body>
 </html>
