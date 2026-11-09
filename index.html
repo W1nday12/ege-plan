@@ -98,6 +98,10 @@
         transition:width .7s cubic-bezier(.32,.72,0,1)}
   .sum-goal{font-size:13px;color:var(--secondary);margin-top:10px}
   .sum-foot{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;align-items:center}
+  .dayline{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+        margin:22px 0 9px 4px;font-size:15px;font-weight:500;letter-spacing:-.1px}
+  .dayline b{font-weight:700;color:var(--blue)}
+  .dayline .dc{font-size:13px;color:var(--secondary);font-weight:500;white-space:nowrap}
   .chip{font-size:12.5px;font-weight:600;color:var(--label);background:var(--fill);border-radius:999px;padding:6px 11px}
   .chip.acc{color:var(--blue);background:transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--blue) 30%,transparent)}
 
@@ -269,7 +273,7 @@
 <script>
 /* ======================= константы ======================= */
 const KEY = 'ege_app_v2';
-const APP_VER = '2.4';
+const APP_VER = '2.5';
 const SITE = 'https://lk.100points.ru/student/calendar';
 const API = 'https://api.100points.ru/api';
 const PALETTE = ['#007AFF','#AF52DE','#FF9500','#34C759','#FF3B30','#5AC8FA','#FF2D55','#5856D6','#FF9F0A','#30D158'];
@@ -630,11 +634,12 @@ function viewToday(){
     return '<button class="row" data-act="toggle" data-subj="'+s.id+'" data-n="'+i.n+'">'+
       '<span class="ck '+(done?'on':'')+' '+(just?'pop':'')+'">'+I.check+'</span>'+
       '<span class="grow"><span class="rt '+(done?'done':'')+'">Урок '+l.N+'. '+esc(l.T)+'</span>'+
-      '<span class="rs" style="display:block">'+esc(s.name)+' · '+humanDate(l.D)+' · '+l.K+' '+plural(l.K,'задание','задания','заданий')+'</span></span></button>';
+      '<span class="rs" style="display:block">'+esc(s.name)+' · '+humanDate(l.D)+'</span></span></button>';
   }).join('');
 
   const planBlock = items.length ? (
-    '<div class="gh">План на сегодня'+(doneCount?' · '+doneCount+' из '+items.length:'')+'</div>'+
+    '<div class="dayline"><span>Сегодня нужно посмотреть <b>'+items.length+' '+plural(items.length,'урок','урока','уроков')+'</b></span>'+
+      (doneCount?'<span class="dc">'+doneCount+' из '+items.length+' отмечено</span>':'')+'</div>'+
     '<div class="group"'+rv(0.12)+'>'+rows+
       (doneCount===items.length
         ? '<button class="row" data-act="extend"><span class="ck" style="border-style:dashed;color:var(--blue);border-color:var(--blue)">'+I.plus+'</span><span class="grow"><span class="rt" style="color:var(--blue)">Взять ещё</span><span class="rs" style="display:block">план дня выполнен</span></span></button>'
@@ -680,7 +685,8 @@ function viewPlan(){
     '<button class="'+(x.id===s.id?'on':'')+'" data-act="plansubj" data-subj="'+x.id+'">'+esc(x.name)+'</button>').join('')+'</div>' : '';
 
   const todayRows = todayItems.length ? (
-    '<div class="gh">Сегодня по плану'+(todayLeft?' · '+todayLeft+' '+plural(todayLeft,'урок','урока','уроков'):'')+'</div>'+
+    '<div class="dayline"><span>Сегодня нужно посмотреть <b>'+todayItems.length+' '+plural(todayItems.length,'урок','урока','уроков')+'</b></span>'+
+      (todayLeft<todayItems.length?'<span class="dc">'+(todayItems.length-todayLeft)+' из '+todayItems.length+' отмечено</span>':'')+'</div>'+
     '<div class="group"'+rv(0.08)+'>'+todayItems.map(l=>{
       const done=w.has(l.N);
       return '<button class="row" data-act="toggle" data-subj="'+s.id+'" data-n="'+l.N+'">'+
@@ -713,7 +719,7 @@ function viewPlan(){
       '<div class="sum-goal">цель — урок '+tgt+(tgtDate?' · '+tgtDate:'')+'</div>'+
       '<div class="sum-foot">'+
         (rem.length
-          ? '<span class="chip acc">сегодня '+per+' '+plural(per,'урок','урока','уроков')+'</span>'+
+          ? '<span class="chip acc">по '+per+' '+plural(per,'уроку','урока','уроков')+' в день</span>'+
             '<span class="chip">≈ '+daysLeft+' '+plural(daysLeft,'день','дня','дней')+'</span>'
           : '<span class="chip">всё догнано</span>')+
       '</div>'+
