@@ -84,11 +84,15 @@
 
   /* сводка в плане */
   .sum{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:18px 18px 15px;margin:16px 0 12px}
-  .sum-top{display:flex;align-items:flex-end;gap:16px}
-  .sum-cell{flex:none}
+  .sum-top{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+  .sum-cell{flex:none;min-width:0}
+  .sum-cell.right{text-align:right}
+  .sum-cell.right .sum-num{justify-content:flex-end}
   .sum-cap{font-size:11.5px;color:var(--secondary);font-weight:650;letter-spacing:.03em;text-transform:uppercase}
-  .sum-num{font-size:40px;font-weight:800;letter-spacing:-1.8px;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums}
-  .sum-mid{flex:1;padding-bottom:7px;min-width:0}
+  .sum-num{font-size:40px;font-weight:800;letter-spacing:-1.8px;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums;
+        display:flex;align-items:baseline;gap:5px}
+  .sum-u{font-size:13px;font-weight:650;letter-spacing:-.1px;color:var(--secondary);white-space:nowrap}
+  .sum-bar{margin-top:15px}
   .bar{height:9px;border-radius:99px;background:var(--fill);overflow:hidden}
   .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--hero1),var(--hero2));
         transition:width .7s cubic-bezier(.32,.72,0,1)}
@@ -265,7 +269,7 @@
 <script>
 /* ======================= константы ======================= */
 const KEY = 'ege_app_v2';
-const APP_VER = '2.3';
+const APP_VER = '2.4';
 const SITE = 'https://lk.100points.ru/student/calendar';
 const API = 'https://api.100points.ru/api';
 const PALETTE = ['#007AFF','#AF52DE','#FF9500','#34C759','#FF3B30','#5AC8FA','#FF2D55','#5856D6','#FF9F0A','#30D158'];
@@ -701,10 +705,11 @@ function viewPlan(){
       '<div class="sum-top">'+
         '<div class="sum-cell"><div class="sum-cap">Ты на уроке</div>'+
           '<div class="sum-num" data-num="'+cur+'">'+cur+'</div></div>'+
-        '<div class="sum-mid"><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
-        '<div class="sum-cell" style="text-align:right"><div class="sum-cap">Осталось</div>'+
-          '<div class="sum-num" data-num="'+rem.length+'">'+rem.length+'</div></div>'+
+        '<div class="sum-cell right"><div class="sum-cap">Осталось</div>'+
+          '<div class="sum-num"><span data-num="'+rem.length+'">'+rem.length+'</span>'+
+          '<span class="sum-u">'+plural(rem.length,'урок','урока','уроков')+'</span></div></div>'+
       '</div>'+
+      '<div class="sum-bar"><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
       '<div class="sum-goal">цель — урок '+tgt+(tgtDate?' · '+tgtDate:'')+'</div>'+
       '<div class="sum-foot">'+
         (rem.length
