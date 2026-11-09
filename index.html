@@ -40,10 +40,10 @@
   }
   button{font-family:inherit}
   .app{max-width:600px;margin:0 auto;padding:6px 16px 10px}
-  .lt{font-size:34px;font-weight:700;letter-spacing:-.7px;margin:14px 0 2px;line-height:1.15}
-  .sub{color:var(--secondary);font-size:15px}
-  .gh{font-size:13px;color:var(--secondary);margin:22px 0 7px 4px;font-weight:500}
-  .group{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px}
+  .lt{font-size:40px;font-weight:800;letter-spacing:-1.6px;margin:16px 0 2px;line-height:1.04}
+  .sub{color:var(--secondary);font-size:15.5px;letter-spacing:-.1px}
+  .gh{font-size:12px;letter-spacing:.055em;text-transform:uppercase;color:var(--secondary);margin:26px 0 8px 4px;font-weight:650}
+  .group{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px}
   .row{display:flex;align-items:center;gap:12px;padding:13px 16px;width:100%;background:none;border:0;
        font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;min-height:44px}
   .row + .row::before{content:"";position:absolute;left:16px;right:0;top:0;height:.5px;background:var(--sep)}
@@ -55,25 +55,52 @@
   .chev{color:var(--tertiary);display:flex;flex:none}
   .chev svg{width:18px;height:18px}
 
-  .hero{background:linear-gradient(140deg,var(--hero1),var(--hero2));border-radius:22px;padding:20px;
-        color:#fff;box-shadow:0 12px 28px rgba(10,132,255,.22);margin:16px 0 4px;position:relative;overflow:hidden}
-  .hero::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;
-        background:rgba(255,255,255,.12);right:-60px;top:-80px}
-  .hero .n{font-size:46px;font-weight:700;letter-spacing:-2px;line-height:1}
-  .hero .l{font-size:15px;opacity:.92;margin-top:4px}
-  .hero .f{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-  .hero .pill{background:rgba(255,255,255,.22);border-radius:11px;padding:7px 11px;font-size:13px;font-weight:500}
+  .hero{background:linear-gradient(135deg,var(--hero1),var(--hero2));border-radius:26px;padding:24px 22px 20px;
+        color:#fff;box-shadow:0 22px 46px -16px rgba(10,132,255,.65);margin:18px 0 6px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:-45%;z-index:0;pointer-events:none;
+        background:radial-gradient(circle at 28% 22%,rgba(255,255,255,.55),transparent 42%),
+                   radial-gradient(circle at 82% 88%,rgba(255,255,255,.32),transparent 38%);
+        animation:aurora 16s ease-in-out infinite alternate}
+  .hero::after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;
+        background:rgba(255,255,255,.10);right:-70px;top:-95px}
+  .hero>*{position:relative;z-index:1}
+  @keyframes aurora{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.14)}}
+  .hero .n{font-size:68px;font-weight:800;letter-spacing:-3.4px;line-height:.92;font-variant-numeric:tabular-nums}
+  .hero .l{font-size:16px;opacity:.95;margin-top:7px;max-width:86%;letter-spacing:-.1px}
+  .hero .f{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .hero .pill{background:rgba(255,255,255,.20);border:.5px solid rgba(255,255,255,.26);
+        border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 
-  .subj{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border-radius:16px;
-        margin-bottom:10px;box-shadow:var(--shadow);border:0;width:100%;text-align:left;font:inherit;color:inherit}
-  .subj:active{transform:scale(.99)}
-  .subj{transition:transform .18s cubic-bezier(.32,.72,0,1)}
+  .subj{display:flex;align-items:center;gap:14px;padding:14px 15px;background:var(--card);border-radius:20px;
+        margin-bottom:10px;box-shadow:var(--shadow);border:0;width:100%;text-align:left;font:inherit;color:inherit;
+        transition:transform .22s cubic-bezier(.32,.72,0,1),box-shadow .22s}
+  .subj:active{transform:scale(.985)}
   .ring{width:48px;height:48px;flex:none;position:relative}
   .ring svg{width:48px;height:48px;transform:rotate(-90deg)}
-  .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:12.5px;font-weight:650;color:var(--label)}
-  .sname{font-size:17px;font-weight:600;line-height:1.25}
-  .scourse{font-size:13px;color:var(--secondary);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .smeta{font-size:13px;color:var(--secondary);margin-top:3px}
+  .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:12.5px;font-weight:650;color:var(--label);font-variant-numeric:tabular-nums}
+  .sname{font-size:17.5px;font-weight:650;line-height:1.22;letter-spacing:-.2px}
+  .scourse{font-size:12.5px;color:var(--secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .smeta{font-size:13px;color:var(--secondary);margin-top:4px}
+
+  /* сводка в плане */
+  .sum{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:18px 18px 15px;margin:16px 0 12px}
+  .sum-top{display:flex;align-items:flex-end;gap:16px}
+  .sum-cell{flex:none}
+  .sum-cap{font-size:11.5px;color:var(--secondary);font-weight:650;letter-spacing:.03em;text-transform:uppercase}
+  .sum-num{font-size:40px;font-weight:800;letter-spacing:-1.8px;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums}
+  .sum-mid{flex:1;padding-bottom:7px;min-width:0}
+  .bar{height:9px;border-radius:99px;background:var(--fill);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--hero1),var(--hero2));
+        transition:width .7s cubic-bezier(.32,.72,0,1)}
+  .sum-goal{font-size:13px;color:var(--secondary);margin-top:10px}
+  .sum-foot{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;align-items:center}
+  .chip{font-size:12.5px;font-weight:600;color:var(--label);background:var(--fill);border-radius:999px;padding:6px 11px}
+  .chip.acc{color:var(--blue);background:transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--blue) 30%,transparent)}
+
+  /* появление при скролле */
+  [data-reveal]{opacity:0;transform:translateY(16px);
+        transition:opacity .6s cubic-bezier(.32,.72,0,1),transform .6s cubic-bezier(.32,.72,0,1)}
+  [data-reveal].in{opacity:1;transform:none}
 
   .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--tertiary);flex:none;
       display:grid;place-items:center;color:transparent;transition:background .18s,border-color .18s,transform .18s}
@@ -134,6 +161,39 @@
   .dot{width:7px;height:7px;border-radius:50%;background:var(--tertiary);transition:.25s}
   .dot.on{background:var(--blue);width:18px;border-radius:9px}
   .big{font-size:64px;line-height:1;margin:6px 0 14px}
+
+  /* первый экран — как продуктовая страница */
+  .land{padding-top:6px}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:var(--blue);
+         background:var(--fill);border-radius:999px;padding:7px 12px;margin-bottom:22px}
+  .badge i{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .land h1{font-size:44px;line-height:1.03;letter-spacing:-2px;font-weight:800;margin:0 0 14px}
+  .land h1 em{font-style:normal;background:linear-gradient(115deg,var(--hero1),var(--hero2));
+        -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .land .lead{font-size:17px;line-height:1.45;color:var(--secondary);margin:0 0 22px;max-width:95%}
+  .orb{width:132px;height:132px;margin:2px auto 26px;position:relative}
+  .orb .o1{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;color:#fff;
+        background:radial-gradient(circle at 32% 26%,#9AD6FF,var(--hero1) 46%,var(--hero2));
+        box-shadow:0 26px 54px -16px rgba(10,132,255,.7);animation:float 6.5s ease-in-out infinite}
+  .orb .o1 svg{width:58px;height:58px;stroke-width:2.3}
+  .orb .o2,.orb .o3{position:absolute;border-radius:50%;border:1px solid var(--sep)}
+  .orb .o2{inset:-16px;animation:pulse 6.5s ease-in-out infinite}
+  .orb .o3{inset:-34px;opacity:.55;animation:pulse 6.5s ease-in-out infinite .5s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.45}50%{transform:scale(1.035);opacity:.85}}
+  .feat{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
+  .feat .fi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--fill);color:var(--blue);flex:none}
+  .feat .fi svg{width:19px;height:19px}
+  .feat .ft{font-size:15px;font-weight:650;line-height:1.3;letter-spacing:-.1px}
+  .feat .fd{font-size:13.5px;color:var(--secondary);margin-top:2px;line-height:1.35}
+  @media (max-height:700px){
+    .orb{width:100px;height:100px;margin-bottom:16px}
+    .orb .o1 svg{width:42px;height:42px}
+    .land h1{font-size:34px}
+    .land .lead{font-size:15.5px;margin-bottom:16px}
+    .badge{margin-bottom:14px}
+    .feat{margin-bottom:10px}
+  }
 
   .course{display:flex;align-items:center;gap:12px;padding:12px 16px;position:relative;cursor:pointer}
   .course + .course::before{content:"";position:absolute;left:16px;right:0;top:0;height:.5px;background:var(--sep)}
@@ -205,7 +265,7 @@
 <script>
 /* ======================= константы ======================= */
 const KEY = 'ege_app_v2';
-const APP_VER = '2.2';
+const APP_VER = '2.3';
 const SITE = 'https://lk.100points.ru/student/calendar';
 const API = 'https://api.100points.ru/api';
 const PALETTE = ['#007AFF','#AF52DE','#FF9500','#34C759','#FF3B30','#5AC8FA','#FF2D55','#5856D6','#FF9F0A','#30D158'];
@@ -437,13 +497,56 @@ function planDone(){
 }
 
 /* ======================= рендер ======================= */
+let REVEAL = false;
+function rv(d){ return REVEAL ? ' data-reveal'+(d?' style="transition-delay:'+d+'s"':'') : ''; }
+
 function render(){
   const root=document.getElementById('root');
   applyAccent();
-  if(!state.onboarded || state.ob.active){ root.innerHTML = onboardView(); return; }
+  if(!state.onboarded || state.ob.active){
+    REVEAL = true;
+    root.innerHTML = onboardView();
+    initReveal();
+    return;
+  }
+  REVEAL = !!state._anim || !render._seen;
+  render._seen = true;
   const body = state.tab==='plan' ? viewPlan() : state.tab==='set' ? viewSettings() : viewToday();
   root.innerHTML = '<div class="app '+(state._anim||'fade')+'">'+body+'</div>'+tabbar();
   state._just=''; state._anim='';
+  initReveal(); countUp();
+}
+
+function initReveal(){
+  const els=[...document.querySelectorAll('[data-reveal]')];
+  if(!els.length) return;
+  if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+  const io=new IntersectionObserver(entries=>{
+    for(const en of entries) if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  }, {threshold:.04, rootMargin:'0px 0px -6% 0px'});
+  els.forEach(e=>io.observe(e));
+  setTimeout(()=>{
+    els.forEach(e=>{ if(!e.classList.contains('in') && e.getBoundingClientRect().top < innerHeight) e.classList.add('in'); });
+  }, 650);
+}
+
+function countUp(){
+  if(!REVEAL) return;
+  for(const el of document.querySelectorAll('[data-num]')){
+    const to=Number(el.dataset.num);
+    if(!isFinite(to) || to>9999) continue;
+    const t0=Date.now(), dur=700;
+    let finished=false;
+    const finish=()=>{ if(!finished){ finished=true; el.textContent=to; } };
+    const step=()=>{
+      if(finished) return;
+      const k=Math.min(1,(Date.now()-t0)/dur), e=1-Math.pow(1-k,3);
+      el.textContent=Math.round(to*e);
+      if(k<1) requestAnimationFrame(step); else finish();
+    };
+    requestAnimationFrame(step);
+    setTimeout(finish, dur+150);
+  }
 }
 
 function celebrate(){
@@ -497,18 +600,18 @@ function viewToday(){
   const dt=new Date();
   const dateStr=dt.getDate()+' '+MONTHS[dt.getMonth()]+', '+WD_FULL[dt.getDay()];
 
-  let totalRem=0,totalTasks=0,totalPd=0;
-  const cards=state.subjects.map(s=>{
+  let totalRem=0,totalPd=0;
+  const cards=state.subjects.map((s,i)=>{
     const tgt=targetNo(s), cur=currentNo(s), rem=remainingOf(s), pd=perDayOf(s);
-    totalRem+=rem.length; totalTasks+=tasksSum(rem); totalPd+=pd;
+    totalRem+=rem.length; totalPd+=pd;
     const pct=tgt?Math.min(100,Math.round(cur/tgt*100)):100;
     const initial=(String(s.name||'?').trim().charAt(0)||'?').toUpperCase();
-    return '<button class="subj" data-act="openplan" data-subj="'+s.id+'">'+
+    return '<button class="subj" data-act="openplan" data-subj="'+s.id+'"'+rv(0.03+i*0.05)+'>'+
       '<span class="cover ph" style="background:'+s.color+'">'+esc(initial)+
         (s.cover?'<img src="'+esc(s.cover)+'" alt="" decoding="async" onerror="this.remove()">':'')+'</span>'+
       '<div class="grow"><div class="sname">'+esc(s.name)+'</div>'+
       '<div class="scourse">'+esc(s.course)+'</div>'+
-      '<div class="smeta">цель: урок '+tgt+' · осталось '+rem.length+'</div></div>'+
+      '<div class="smeta">урок '+cur+' из '+tgt+' · осталось '+rem.length+' '+plural(rem.length,'урок','урока','уроков')+'</div></div>'+
       ring(pct,s.color,cur,'sm')+'</button>';
   }).join('');
 
@@ -528,7 +631,7 @@ function viewToday(){
 
   const planBlock = items.length ? (
     '<div class="gh">План на сегодня'+(doneCount?' · '+doneCount+' из '+items.length:'')+'</div>'+
-    '<div class="group">'+rows+
+    '<div class="group"'+rv(0.12)+'>'+rows+
       (doneCount===items.length
         ? '<button class="row" data-act="extend"><span class="ck" style="border-style:dashed;color:var(--blue);border-color:var(--blue)">'+I.plus+'</span><span class="grow"><span class="rt" style="color:var(--blue)">Взять ещё</span><span class="rs" style="display:block">план дня выполнен</span></span></button>'
         : '')+
@@ -541,58 +644,86 @@ function viewToday(){
   );
 
   return ''+
-    '<h1 class="lt">Сегодня</h1>'+
-    '<div class="sub">'+dateStr+'</div>'+
+    '<h1 class="lt"'+rv()+'>Сегодня</h1>'+
+    '<div class="sub"'+rv(0.02)+'>'+dateStr+'</div>'+
     '<div class="note" style="padding-top:4px">'+syncLine()+'</div>'+
-    '<div class="hero"><div class="n">'+totalRem+'</div>'+
+    '<div class="hero"'+rv(0.04)+'><div class="n" data-num="'+totalRem+'">'+totalRem+'</div>'+
       '<div class="l">'+plural(totalRem,'вебинар','вебинара','вебинаров')+' до сегодняшнего урока</div>'+
-      '<div class="f"><span class="pill">'+totalTasks+' '+plural(totalTasks,'задание','задания','заданий')+'</span>'+
+      '<div class="f">'+
       (totalPd?'<span class="pill">по '+totalPd+' в день</span>':'')+
       '<span class="pill">'+state.settings.days+' '+plural(state.settings.days,'день','дня','дней')+' на догон</span></div></div>'+
     '<div class="gh">Предметы</div>'+cards+
     planBlock+
     '<div class="gh">Напоминания</div>'+
-    '<div class="group"><button class="row" data-act="ics"><span class="grow"><span class="rt">Добавить в календарь</span>'+
+    '<div class="group"'+rv(0.14)+'><button class="row" data-act="ics"><span class="grow"><span class="rt">Добавить в календарь</span>'+
       '<span class="rs" style="display:block">каждый день в '+state.settings.time+', даже если приложение закрыто</span></span><span class="chev">'+I.cal+'</span></button></div>';
 }
 
 function viewPlan(){
+  ensureDayPlan();
   const s = subjBy(state.planSubj) || state.subjects[0];
   if(!s) return '<div class="empty"><div class="ico">'+I.book+'</div><span class="et">Пока нет предметов</span><span class="ed">Добавь курс в Настройках — и здесь появится план по урокам.</span></div>';
   state.planSubj = s.id;
-  const tgt=targetNo(s), cur=currentNo(s), rem=remainingOf(s), w=watchedSet(s);
-  const pct=tgt?Math.min(100,Math.round(w.size/tgt*100)):100;
+  const tgt=targetNo(s), cur=currentNo(s), rem=remainingOf(s), w=watchedSet(s), per=perDayOf(s);
+  const pct=tgt?Math.min(100,Math.round(cur/tgt*100)):100;
+  const daysLeft = per ? Math.ceil(rem.length/per) : 0;
+  const tgtLesson = lessonOf(s,tgt);
+  const tgtDate = tgtLesson && tgtLesson.D ? shortDate(tgtLesson.D).split(' ')[0] : '';
 
-  const rows=s.lessons.map(l=>{
-    const done=w.has(l.N), fut=l.N>tgt;
-    return '<button class="row '+(fut?'':'')+'" data-act="'+(fut?'noop':'toggle')+'" data-subj="'+s.id+'" data-n="'+l.N+'" '+(fut?'disabled style="opacity:.45"':'')+'>'+
-      '<span class="ck '+(done?'on':'')+'">'+I.check+'</span>'+
-      '<span class="grow"><span class="rt '+(done?'done':'')+'">Урок '+l.N+'. '+esc(l.T)+'</span>'+
-      '<span class="rs" style="display:block">'+humanDate(l.D)+'</span></span>'+
-      '<span class="tag">'+l.K+' '+plural(l.K,'зад.','зад.','зад.')+'</span></button>';
-  }).join('');
-
+  const todayItems = state.dayPlan.items.filter(i=>i.s===s.id).map(i=>lessonOf(s,i.n)).filter(Boolean);
+  const todayLeft = todayItems.filter(l=>!w.has(l.N)).length;
   const seg = state.subjects.length>1 ? '<div class="seg">'+state.subjects.map(x=>
     '<button class="'+(x.id===s.id?'on':'')+'" data-act="plansubj" data-subj="'+x.id+'">'+esc(x.name)+'</button>').join('')+'</div>' : '';
 
-  return '<h1 class="lt">План</h1>'+
-    '<div class="sub">'+esc(s.course)+'</div>'+seg+
-    '<div class="group" style="margin-top:14px">'+
-      '<div class="field"><label>Догнать до</label><b style="font-size:19px">урок '+tgt+'</b></div>'+
-      '<div class="field"><label>Ты на</label><b style="font-size:19px">'+cur+'</b></div>'+
-      '<div class="field"><label>Осталось</label><b style="font-size:19px">'+rem.length+'</b></div>'+
-      '<div class="field"><label>Заданий</label><b style="font-size:19px">'+tasksSum(rem)+'</b></div>'+
-      '<div class="field"><label>План дня</label><b style="font-size:19px">'+perDayOf(s)+'</b></div>'+
+  const todayRows = todayItems.length ? (
+    '<div class="gh">Сегодня по плану'+(todayLeft?' · '+todayLeft+' '+plural(todayLeft,'урок','урока','уроков'):'')+'</div>'+
+    '<div class="group"'+rv(0.08)+'>'+todayItems.map(l=>{
+      const done=w.has(l.N);
+      return '<button class="row" data-act="toggle" data-subj="'+s.id+'" data-n="'+l.N+'">'+
+        '<span class="ck '+(done?'on':'')+'">'+I.check+'</span>'+
+        '<span class="grow"><span class="rt '+(done?'done':'')+'">Урок '+l.N+'. '+esc(l.T)+'</span>'+
+        '<span class="rs" style="display:block">'+humanDate(l.D)+'</span></span></button>';
+    }).join('')+'</div>'
+  ) : '';
+
+  const rows=s.lessons.map(l=>{
+    const done=w.has(l.N), fut=l.N>tgt;
+    return '<button class="row" data-act="'+(fut?'noop':'toggle')+'" data-subj="'+s.id+'" data-n="'+l.N+'" '+(fut?'disabled style="opacity:.4"':'')+'>'+
+      '<span class="ck '+(done?'on':'')+'">'+I.check+'</span>'+
+      '<span class="grow"><span class="rt '+(done?'done':'')+'">Урок '+l.N+'. '+esc(l.T)+'</span>'+
+      '<span class="rs" style="display:block">'+humanDate(l.D)+'</span></span>'+
+      (l.N===tgt?'<span class="tag">цель</span>':'')+'</button>';
+  }).join('');
+
+  return '<h1 class="lt"'+rv()+'>План</h1>'+
+    '<div class="sub"'+rv(0.02)+'>'+esc(s.course)+'</div>'+seg+
+    '<div class="sum"'+rv(0.06)+'>'+
+      '<div class="sum-top">'+
+        '<div class="sum-cell"><div class="sum-cap">Ты на уроке</div>'+
+          '<div class="sum-num" data-num="'+cur+'">'+cur+'</div></div>'+
+        '<div class="sum-mid"><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
+        '<div class="sum-cell" style="text-align:right"><div class="sum-cap">Осталось</div>'+
+          '<div class="sum-num" data-num="'+rem.length+'">'+rem.length+'</div></div>'+
+      '</div>'+
+      '<div class="sum-goal">цель — урок '+tgt+(tgtDate?' · '+tgtDate:'')+'</div>'+
+      '<div class="sum-foot">'+
+        (rem.length
+          ? '<span class="chip acc">сегодня '+per+' '+plural(per,'урок','урока','уроков')+'</span>'+
+            '<span class="chip">≈ '+daysLeft+' '+plural(daysLeft,'день','дня','дней')+'</span>'
+          : '<span class="chip">всё догнано</span>')+
+      '</div>'+
     '</div>'+
-    (rem.length?'<button class="btn sec sm" data-act="markall" data-subj="'+s.id+'" data-n="'+tgt+'" style="margin-bottom:14px">Отметить всё до урока '+tgt+'</button>':'')+
-    '<div class="group">'+rows+'</div>';
+    todayRows+
+    (rem.length?'<button class="btn sec sm" data-act="markall" data-subj="'+s.id+'" data-n="'+tgt+'" style="margin-bottom:18px">Отметить всё до урока '+tgt+'</button>':'')+
+    '<div class="gh">Все уроки</div>'+
+    '<div class="group"'+rv(0.12)+'>'+rows+'</div>';
 }
 
 function viewSettings(){
   const rows = state.subjects.map(s=>{
     const tgt=targetNo(s), cur=currentNo(s);
     return '<div class="field"><span style="width:10px;height:10px;border-radius:50%;background:'+s.color+';flex:none"></span>'+
-      '<label style="font-size:16px">'+esc(s.name)+'<span class="rs" style="display:block">последний просмотренный · цель '+tgt+'</span></label>'+
+      '<label style="font-size:16px">'+esc(s.name)+'<span class="rs" style="display:block">ты на уроке '+cur+' · цель — урок '+tgt+'</span></label>'+
       '<div class="stepper"><button data-act="setcur" data-subj="'+s.id+'" data-d="-1">−</button><b>'+cur+'</b><button data-act="setcur" data-subj="'+s.id+'" data-d="1">+</button></div></div>'+
       '<div class="field" style="padding-top:0;min-height:auto"><button class="btn danger sm" data-act="delsubj" data-subj="'+s.id+'">Убрать предмет</button></div>';
   }).join('');
@@ -649,11 +780,17 @@ function onboardView(){
   const step = ob.step;
   let inner='';
   if(step===0){
-    inner = '<div class="big">🎯</div>'+
-      '<h2>Догонялка</h2>'+
-      '<p>Показывает, сколько вебинаров и заданий нужно закрыть, чтобы догнать сегодняшний урок. Работает с любым курсом 100балльного.</p>'+
-      '<div class="spacer"></div>'+
-      '<button class="btn" data-act="ob-start">Начать настройку</button>';
+    inner = '<div class="land">'+
+      '<span class="badge"><i></i>100балльный · трекер</span>'+
+      '<div class="orb"><span class="o3"></span><span class="o2"></span><span class="o1">'+I.check+'</span></div>'+
+      '<h1>Догони<br><em>свой урок.</em></h1>'+
+      '<p class="lead">Приложение считает, сколько вебинаров осталось до сегодняшнего урока, и собирает план на день.</p>'+
+      '<div class="feat"><span class="fi">'+I.book+'</span><div><div class="ft">Любые твои курсы</div><div class="fd">Математика, информатика — любой курс 100балльного</div></div></div>'+
+      '<div class="feat"><span class="fi">'+I.today+'</span><div><div class="ft">План на сегодня</div><div class="fd">Ровно столько уроков, сколько нужно</div></div></div>'+
+      '<div class="feat"><span class="fi">'+I.cal+'</span><div><div class="ft">Напоминания</div><div class="fd">В календарь или уведомлением</div></div></div>'+
+    '</div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn" data-act="ob-start">Начать настройку</button>';
   }
   else if(step===1){
     inner = '<h2>Подключи аккаунт</h2>'+
